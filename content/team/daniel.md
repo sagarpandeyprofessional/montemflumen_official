@@ -9,7 +9,7 @@ email: "fellegger.d@gmail.com"
 linkedin: "https://www.linkedin.com/in/danielfellegger-0094a8166"
 
 order: 5
-featured: true
+featured: false
 ---
 
 Daniel Fellegger is an engineering leader, lecturer, and startup advisor with over a decade of experience spanning software engineering, robotics, cybersecurity, and agile product delivery. He is recognized for building strong, collaborative teams and aligning technical execution with strategic business goals.

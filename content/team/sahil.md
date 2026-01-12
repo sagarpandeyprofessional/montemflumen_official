@@ -1,6 +1,6 @@
 ---
 name: "Sahil Gevariya"
-role: "Full Stack Developer (Intern)"
+role: "Full Stack Developer"
 department: "Engineering"
 bio: "Full stack developer, Focus: web development and scalable solutions."
 image: "/images/team/sahil.png"
@@ -9,7 +9,7 @@ linkedin: "https://www.linkedin.com/in/sahilnandlalbhai-gevariya-98a3163a2"
 github: "https://github.com/Yoosahil06"
 
 order: 2
-featured: false
+featured: true
 ---
 
 Sahil Nandlalbhai Gevariya is a full stack developer intern working on web development and engineering projects for Koreaeasy.org. He brings practical experience from professional freelance work and ongoing advanced studies in AI and Big Data.
