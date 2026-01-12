@@ -73,6 +73,7 @@ export default async function TeamMemberPage({
             priority
             sizes="100vw"
             className="object-cover object-right"
+            unoptimized
           />
           {/* Readability overlay (reduce these if it feels too dark) */}
           <div className="absolute inset-0 bg-picket-100/35 dark:bg-forest-950/45" />
