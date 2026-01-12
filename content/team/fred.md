@@ -53,7 +53,7 @@ Daejeon, South Korea
 
 **Woosong University**  
 Artificial Intelligence & Big Data  
-March 2023 – June 2027
+March 2023 – Present
 
 **AIRDEV Bootcamp**  
 No-Code Web Development  
