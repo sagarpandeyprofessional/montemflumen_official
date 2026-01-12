@@ -7,7 +7,7 @@ excerpt: "How we designed and built an English-first community platform that hel
 coverImage: "/images/case-studies/keasylogo.svg"
 featured: true
 challenge: "Foreigners living in South Korea rely on scattered chats, posts, and word-of-mouth to find trustworthy information and community. Discovering the right KakaoTalk groups, practical life guides, events, and job opportunities is time-consuming—and local businesses and organizers struggle to reach foreign residents directly. Keasy needed a single, easy hub that organizes everything and makes it searchable, trustworthy, and mobile-friendly."
-outcome: "We created Keasy as an English-first community app with clear navigation and purpose-built sections—Home, Events, Community, Guides, Connect, and Jobs. Users can discover and join community chat groups across multiple platforms, explore practical guides written by the community, and find jobs from local businesses. The result is a scalable platform that helps foreigners feel connected and helps local businesses reach foreign customers more directly."
+outcome: "We created Keasy as an English-first community app with clear navigation and purpose-built sections—Home, Events, Community, Guides, Connect, and Jobs. Users can discover and join community chat groups across multiple platforms, explore practical guides written by the community, and find jobs from local businesses."
 duration: "MVP launch"
 services:
   - "Product Strategy"
