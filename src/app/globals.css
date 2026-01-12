@@ -1,0 +1,354 @@
+/**
+ * File path: src/app/globals.css
+ * Role/responsibility: Global styles, CSS variables, and Tailwind configuration
+ * Connections: Imported in root layout
+ * Reference documents: PIT-95 (Dark Mode Flicker), TW4-001 (CSS variables)
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =============================================================================
+   CSS CUSTOM PROPERTIES (Theme Variables)
+   ============================================================================= */
+
+@layer base {
+  :root {
+    /* Colors - Light Mode */
+    --color-background: 240 10% 98%;
+    --color-foreground: 120 15% 10%;
+    --color-muted: 60 5% 94%;
+    --color-muted-foreground: 60 5% 45%;
+    --color-border: 60 5% 88%;
+    --color-ring: 120 25% 25%;
+    
+    /* Brand Colors */
+    --color-primary: 90 43% 15%;
+    --color-primary-foreground: 60 10% 98%;
+    --color-accent: 60 10% 72%;
+    --color-accent-foreground: 120 15% 10%;
+  }
+
+  .dark {
+    /* Colors - Dark Mode */
+    --color-background: 120 10% 8%;
+    --color-foreground: 60 10% 94%;
+    --color-muted: 120 10% 14%;
+    --color-muted-foreground: 60 5% 60%;
+    --color-border: 120 10% 20%;
+    --color-ring: 90 30% 50%;
+    
+    /* Brand Colors - Dark Mode */
+    --color-primary: 90 35% 45%;
+    --color-primary-foreground: 60 10% 98%;
+    --color-accent: 60 8% 45%;
+    --color-accent-foreground: 60 10% 94%;
+  }
+}
+
+/* =============================================================================
+   BASE STYLES
+   ============================================================================= */
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  body {
+    @apply bg-picket-100 text-forest-800 dark:bg-forest-950 dark:text-picket-100;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Focus styles for accessibility */
+  :focus-visible {
+    @apply outline-none ring-2 ring-forest-600 ring-offset-2 dark:ring-forest-400 dark:ring-offset-forest-950;
+  }
+
+  /* Selection color */
+  ::selection {
+    @apply bg-forest-200 text-forest-900 dark:bg-forest-700 dark:text-picket-100;
+  }
+
+  /* Headings */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight text-forest-900 dark:text-picket-50;
+  }
+
+  h1 {
+    @apply text-display-1;
+  }
+
+  h2 {
+    @apply text-display-2;
+  }
+
+  h3 {
+    @apply text-heading-1;
+  }
+
+  h4 {
+    @apply text-heading-2;
+  }
+
+  /* Links */
+  a {
+    @apply transition-colors duration-200;
+  }
+
+  /* Images */
+  img {
+    @apply max-w-full h-auto;
+  }
+}
+
+/* =============================================================================
+   COMPONENT STYLES
+   ============================================================================= */
+
+@layer components {
+  /* Container */
+  .container-wide {
+    @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .container-narrow {
+    @apply mx-auto max-w-4xl px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Section spacing */
+  .section {
+    @apply py-section;
+  }
+
+  .section-sm {
+    @apply py-section-sm;
+  }
+
+  /* Button styles */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-200 
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
+           disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply btn bg-forest-800 text-picket-100 hover:bg-forest-700 
+           dark:bg-forest-600 dark:hover:bg-forest-500
+           focus-visible:ring-forest-600;
+  }
+
+  .btn-secondary {
+    @apply btn bg-ash-200 text-forest-800 hover:bg-ash-300
+           dark:bg-ash-700 dark:text-picket-100 dark:hover:bg-ash-600
+           focus-visible:ring-ash-500;
+  }
+
+  .btn-ghost {
+    @apply btn bg-transparent text-forest-800 hover:bg-ash-200
+           dark:text-picket-100 dark:hover:bg-forest-800
+           focus-visible:ring-forest-500;
+  }
+
+  .btn-outline {
+    @apply btn border-2 border-forest-800 text-forest-800 hover:bg-forest-800 hover:text-picket-100
+           dark:border-picket-200 dark:text-picket-200 dark:hover:bg-picket-200 dark:hover:text-forest-900
+           focus-visible:ring-forest-600;
+  }
+
+  .btn-sm {
+    @apply px-3 py-1.5 text-sm;
+  }
+
+  .btn-md {
+    @apply px-5 py-2.5 text-base;
+  }
+
+  .btn-lg {
+    @apply px-7 py-3.5 text-lg;
+  }
+
+  /* Card styles */
+  .card {
+    @apply rounded-xl bg-white shadow-soft transition-all duration-300
+           dark:bg-forest-900 dark:shadow-none dark:ring-1 dark:ring-forest-800;
+  }
+
+  .card-hover {
+    @apply card hover:shadow-medium hover:-translate-y-0.5
+           dark:hover:ring-forest-700;
+  }
+
+  /* Tag/Badge styles */
+  .tag {
+    @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-medium
+           bg-ash-200 text-forest-700
+           dark:bg-forest-800 dark:text-ash-300;
+  }
+
+  .tag-primary {
+    @apply tag bg-forest-100 text-forest-800
+           dark:bg-forest-700 dark:text-forest-100;
+  }
+
+  /* Input styles */
+  .input {
+    @apply w-full rounded-lg border border-ash-300 bg-white px-4 py-2.5 text-forest-800
+           placeholder:text-ash-500 transition-colors duration-200
+           focus:border-forest-600 focus:outline-none focus:ring-2 focus:ring-forest-600/20
+           dark:border-forest-700 dark:bg-forest-900 dark:text-picket-100
+           dark:placeholder:text-ash-500 dark:focus:border-forest-500 dark:focus:ring-forest-500/20;
+  }
+
+  .input-error {
+    @apply border-red-500 focus:border-red-500 focus:ring-red-500/20
+           dark:border-red-500 dark:focus:border-red-500 dark:focus:ring-red-500/20;
+  }
+
+  /* Skeleton loading */
+  .skeleton {
+    @apply animate-pulse rounded bg-ash-200 dark:bg-forest-800;
+  }
+
+  /* Prose styles for markdown content */
+  .prose {
+    @apply max-w-none text-forest-700 dark:text-ash-300;
+  }
+
+  .prose h1 {
+    @apply mt-8 mb-4 text-display-2 text-forest-900 dark:text-picket-50;
+  }
+
+  .prose h2 {
+    @apply mt-8 mb-4 text-heading-1 text-forest-900 dark:text-picket-50;
+  }
+
+  .prose h3 {
+    @apply mt-6 mb-3 text-heading-2 text-forest-900 dark:text-picket-100;
+  }
+
+  .prose p {
+    @apply mb-4 leading-relaxed;
+  }
+
+  .prose a {
+    @apply text-forest-700 underline underline-offset-2 hover:text-forest-900
+           dark:text-ash-300 dark:hover:text-picket-100;
+  }
+
+  .prose ul, .prose ol {
+    @apply mb-4 pl-6;
+  }
+
+  .prose ul {
+    @apply list-disc;
+  }
+
+  .prose ol {
+    @apply list-decimal;
+  }
+
+  .prose li {
+    @apply mb-2;
+  }
+
+  .prose blockquote {
+    @apply my-6 border-l-4 border-forest-600 pl-4 italic text-forest-600
+           dark:border-forest-400 dark:text-ash-400;
+  }
+
+  .prose code {
+    @apply rounded bg-ash-200 px-1.5 py-0.5 font-mono text-sm
+           dark:bg-forest-800;
+  }
+
+  .prose pre {
+    @apply my-6 overflow-x-auto rounded-lg bg-forest-900 p-4 text-picket-100
+           dark:bg-forest-950;
+  }
+
+  .prose pre code {
+    @apply bg-transparent p-0;
+  }
+
+  .prose strong {
+    @apply font-semibold text-forest-900 dark:text-picket-100;
+  }
+
+  .prose hr {
+    @apply my-8 border-ash-300 dark:border-forest-700;
+  }
+
+  .prose img {
+    @apply my-6 rounded-lg;
+  }
+}
+
+/* =============================================================================
+   UTILITY CLASSES
+   ============================================================================= */
+
+@layer utilities {
+  /* Text gradient */
+  .text-gradient {
+    @apply bg-gradient-to-r from-forest-700 to-forest-500 bg-clip-text text-transparent
+           dark:from-forest-300 dark:to-ash-400;
+  }
+
+  /* Backdrop blur */
+  .glass {
+    @apply bg-white/80 backdrop-blur-md dark:bg-forest-900/80;
+  }
+
+  /* Smooth transitions */
+  .transition-smooth {
+    @apply transition-all duration-300 ease-smooth;
+  }
+
+  /* Hide scrollbar */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Aspect ratios */
+  .aspect-hero {
+    aspect-ratio: 16 / 9;
+  }
+
+  .aspect-card {
+    aspect-ratio: 4 / 3;
+  }
+
+  /* Animation delays */
+  .animation-delay-100 {
+    animation-delay: 100ms;
+  }
+
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .animation-delay-300 {
+    animation-delay: 300ms;
+  }
+
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+
+  .animation-delay-500 {
+    animation-delay: 500ms;
+  }
+}

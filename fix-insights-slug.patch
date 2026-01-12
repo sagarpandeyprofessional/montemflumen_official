@@ -1,0 +1,15 @@
+--- src/app/insights/[slug]/page.tsx.orig
++++ src/app/insights/[slug]/page.tsx
+@@ -95,7 +95,7 @@
+             <span className="text-muted-foreground">{formatDate(post.date)}</span>
+ 
+ Change to:
+-            <span className="text-muted-foreground">{formatDate(post.date)}</span>
++            <span className="text-muted-foreground">{formatDate(post.publishedAt)}</span>
+
+@@ -255,7 +255,7 @@
+                       {formatDate(relatedPost.date)}
+
+ Change to:
+-                      {formatDate(relatedPost.date)}
++                      {formatDate(relatedPost.publishedAt)}

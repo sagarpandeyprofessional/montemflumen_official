@@ -1,0 +1,13 @@
+# robots.txt for Montemflumen Inc.
+# https://montemflumen.com
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://montemflumen.com/sitemap.xml
+
+# Disallow admin or private paths (none currently)
+# Disallow: /admin/
+
+
