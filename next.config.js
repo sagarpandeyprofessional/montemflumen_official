@@ -31,6 +31,21 @@ const nextConfig = {
     // Remove console.log in production (PIT-100)
     removeConsole: process.env.NODE_ENV === 'production',
   },
+images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'via.placeholder.com',
+        pathname: '/**',
+      },
+    ],
+  },
+
 };
 
 module.exports = nextConfig;
