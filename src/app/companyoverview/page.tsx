@@ -700,7 +700,7 @@ export default function CompanyOverviewPage() {
                     </Callout>
 
                     <ContentImage
-                      src="/images/banners/plantbanner.png"
+                      src="/images/banners/mainbanner.svg"
                       alt="Montemflumen Mission"
                     />
                   </section>
