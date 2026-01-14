@@ -65,6 +65,22 @@ export const IMAGE_PLACEHOLDER_HTML = `
 </figure>
 `.trim();
 
+export function renderImageBlockHtml(spec?: ImageBlockSpec): string {
+  if (!spec || spec.variant === 'placeholder') return IMAGE_PLACEHOLDER_HTML;
+
+  const src = escapeHtml(spec.src);
+  const alt = escapeHtml(spec.alt);
+  const caption = spec.caption ? escapeHtml(spec.caption) : '';
+
+  return `
+<figure class="my-8 overflow-hidden rounded-2xl border border-border bg-background">
+  <div class="aspect-video w-full bg-muted/20">
+    <img src="${src}" alt="${alt}" class="h-full w-full object-cover" loading="lazy" />
+  </div>
+  ${caption ? `<figcaption class="p-5 text-sm text-muted-foreground">${caption}</figcaption>` : ''}
+</figure>
+`.trim();
+}
 
 export function renderAwardRowHtml(args: { title: string; imageSrc: string }): string {
   const title = escapeHtml(args.title || 'Award');

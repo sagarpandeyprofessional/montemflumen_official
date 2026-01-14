@@ -68,7 +68,6 @@ export const IMAGE_PLACEHOLDER_HTML = `
 </figure>
 `.trim();
 
-}
 
 export function renderAwardRowHtml(args: { title: string; imageSrc: string }): string {
   const title = escapeHtml(args.title || 'Award');
@@ -98,4 +97,461 @@ export function renderAwardRowHtml(args: { title: string; imageSrc: string }): s
   </div>
 </div>
 `.trim();
+}
+
+
+===== FILE: src/components/blog/BlogDocRenderer.tsx =====
+// File path: src/components/blog/BlogDocRenderer.tsx
+// Purpose: Server-side loader + renderer for Company Overview document with:
+// - Cover parsed separately (docTitle/companyName for the cover page)
+// - Body starts at PAGE 2 (no duplicate cover content)
+// - Clean H2 titles (removes "PAGE X — " prefix)
+// - Stable anchors for H2/H3
+// - Inject Team org layout after Team heading (CEO feature + Engineering + Advisors)
+// - Team cards styled like the provided portrait card reference
+// - Removes specific unwanted "optional diagram/image" lines from the rendered output
+// Connected files/modules:
+// - src/lib/content.ts (getAllTeamMembers: reads /content/team/*.md)
+// - src/components/blog/ImagePlaceholder.tsx (renderImageBlockHtml, renderAwardRowHtml)
+// Responsibilities:
+// - Read content/blog/Company Overview & Growth Document.txt from filesystem (project-relative)
+// - Generate TOC + anchors
+// - Replace {image} lines with real existing repo images when possible
+// - Keep global header/footer untouched by design (page handles layout; renderer only outputs safe HTML)
+
+import fs from 'fs';
+import path from 'path';
+import { remark } from 'remark';
+import html from 'remark-html';
+import { getAllTeamMembers } from '@/lib/content';
+import { renderAwardRowHtml, renderImageBlockHtml } from '@/components/blog/ImagePlaceholder';
+
+export type TocItem = { level: 2 | 3; text: string; slug: string };
+
+const DOC_RELATIVE_PATH = path.join('content', 'blog', 'Company Overview & Growth Document.txt');
+
+const STRIP_EXACT_LINES = new Set([
+  'Executive Overview Diagram (optional)',
+  'Founder Story Hero Image',
+  'Optional supporting image (paperwork/forms concept or “language barrier” visual)',
+  'Optional supporting image (paperwork/forms concept or "language barrier" visual)',
+]);
+
+function slugify(input: string): string {
+  const base = input
+    .toLowerCase()
+    .trim()
+    .replace(/[`~!@#$%^&*()+={}\[\]|\\:;"'<>,.?/]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+  return base || 'section';
+}
+
+function escapeHtml(input: string): string {
+  return input
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+function stripHtmlTags(input: string): string {
+  return input.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+}
+
+function normalizeInlineImagePlaceholders(raw: string): string {
+  return raw.replace(/:\s*\{image\}\s*$/gm, ':\n\n{image}');
+}
+
+function normalizePageBreaks(raw: string): string {
+  return raw.replace(/^\s*---\s*PAGE\s*BREAK\s*---\s*$/gim, '---');
+}
+
+function stripPagePrefixFromHeading(text: string): string {
+  return text.replace(/^PAGE\s+\d+\s+—\s+/i, '').trim();
+}
+
+function safeReadCompanyDoc(): string {
+  const absPath = path.join(process.cwd(), DOC_RELATIVE_PATH);
+
+  if (!fs.existsSync(absPath)) {
+    return [
+      '# Company Overview & Growth',
+      '',
+      'The document file was not found at:',
+      `\`${DOC_RELATIVE_PATH}\``,
+      '',
+      'Please ensure the file exists in your repository and redeploy.',
+    ].join('\n');
+  }
+
+  return fs.readFileSync(absPath, 'utf8');
+}
+
+function extractCoverFields(raw: string): { docTitle: string; companyName: string } {
+  const lines = raw.split('\n').map((l) => l.trim());
+
+  const docTitle = (() => {
+    for (const line of lines) {
+      const m = line.match(/^#\s+(.+)$/);
+      if (m) return m[1].trim();
+    }
+    return 'Company Overview & Growth';
+  })();
+
+  const companyName = (() => {
+    const rawLines = raw.split('\n');
+    let inCover = false;
+    for (const line of rawLines) {
+      if (line.trim().match(/^##\s+PAGE\s+1\s+—/i)) inCover = true;
+      if (!inCover) continue;
+
+      const m = line.trim().match(/^#\s+(.+)$/);
+      if (m) return m[1].trim();
+    }
+    return 'Montemflumen Inc.';
+  })();
+
+  return { docTitle, companyName };
+}
+
+function removeCoverSection(raw: string): string {
+  const idx = raw.search(/^##\s+PAGE\s+2\s+—/im);
+  if (idx === -1) return raw;
+  return raw.slice(idx);
+}
+
+function buildTocAndInjectAnchors(markdown: string): { markdown: string; toc: TocItem[] } {
+  const lines = markdown.split('\n');
+  const toc: TocItem[] = [];
+  const slugCounts = new Map<string, number>();
+
+  const nextUniqueSlug = (s: string) => {
+    const count = slugCounts.get(s) ?? 0;
+    slugCounts.set(s, count + 1);
+    return count === 0 ? s : `${s}-${count + 1}`;
+  };
+
+  const out: string[] = [];
+  for (const line of lines) {
+    const h2 = line.match(/^##\s+(.+)\s*$/);
+    const h3 = line.match(/^###\s+(.+)\s*$/);
+
+    if (h2 || h3) {
+      const level: 2 | 3 = h2 ? 2 : 3;
+      const rawText = (h2 ? h2[1] : h3?.[1] ?? '').trim();
+      const text = level === 2 ? stripPagePrefixFromHeading(rawText) : rawText;
+
+      const slug = nextUniqueSlug(slugify(text));
+      toc.push({ level, text, slug });
+
+      if (level === 2) out.push(`## <span id="${slug}"></span>${text}`);
+      else out.push(`### <span id="${slug}"></span>${text}`);
+      continue;
+    }
+
+    out.push(line);
+  }
+
+  return { markdown: out.join('\n'), toc };
+}
+
+async function markdownToHtml(markdown: string): Promise<string> {
+  const result = await remark().use(html).process(markdown);
+  return result.toString();
+}
+
+function inferText(v: unknown): string {
+  if (typeof v === 'string') return v;
+  return '';
+}
+
+function inferImageSrc(member: any): string {
+  const direct =
+    inferText(member.image) ||
+    inferText(member.imageSrc) ||
+    inferText(member.photo) ||
+    inferText(member.avatar) ||
+    inferText(member.picture);
+
+  if (direct) return direct.startsWith('/') ? direct : `/${direct}`;
+
+  const slug = inferText(member.slug);
+  if (slug) return `/images/team/${slug}.png`;
+
+  return '/images/team/sagar.png';
+}
+
+function inferName(member: any): string {
+  return inferText(member.name) || inferText(member.fullName) || inferText(member.slug) || 'Team member';
+}
+
+function inferRole(member: any): string {
+  return inferText(member.role) || inferText(member.position) || inferText(member.jobTitle) || '';
+}
+
+function isCEO(member: any): boolean {
+  const role = inferRole(member).toLowerCase();
+  const slug = inferText(member.slug).toLowerCase();
+  const name = inferName(member).toLowerCase();
+  return role.includes('ceo') || role.includes('founder') || slug === 'sagar' || name.includes('sagar');
+}
+
+function isAdvisor(member: any): boolean {
+  const role = inferRole(member).toLowerCase();
+  const dept = inferText(member.department).toLowerCase();
+  return role.includes('advisor') || dept.includes('advisor') || role.includes('external advisor');
+}
+
+function isEngineer(member: any): boolean {
+  const role = inferRole(member).toLowerCase();
+  const dept = inferText(member.department).toLowerCase();
+  return (
+    role.includes('engineer') ||
+    role.includes('developer') ||
+    role.includes('software') ||
+    dept.includes('engineer') ||
+    dept.includes('product') ||
+    dept.includes('dev')
+  );
+}
+
+function takeQuoteFromMember(member: any): string {
+  const contentHtml = inferText(member.content);
+  if (!contentHtml) return '';
+  const text = stripHtmlTags(contentHtml);
+  if (!text) return '';
+  return text.length > 180 ? `${text.slice(0, 180)}…` : text;
+}
+
+function iconSvg(kind: 'web' | 'mail' | 'linkedin'): string {
+  // Minimal inline SVGs so we don't add deps.
+  if (kind === 'web') {
+    return `<svg viewBox="0 0 24 24" fill="none" class="h-4 w-4" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 100 20 10 10 0 000-20z"/><path d="M2 12h20"/><path d="M12 2c3 3.5 3 16.5 0 20"/><path d="M12 2c-3 3.5-3 16.5 0 20"/></svg>`;
+  }
+  if (kind === 'mail') {
+    return `<svg viewBox="0 0 24 24" fill="none" class="h-4 w-4" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M4 6l8 6 8-6"/></svg>`;
+  }
+  return `<svg viewBox="0 0 24 24" fill="none" class="h-4 w-4" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 01-6 6H7v7h3v-4h1a6 6 0 006-6V8z"/><path d="M7 8h3a6 6 0 016 6"/></svg>`;
+}
+
+function maybeLink(member: any, kind: 'web' | 'mail' | 'linkedin'): string | null {
+  const website = inferText(member.website) || inferText(member.site) || inferText(member.url);
+  const email = inferText(member.email);
+  const linkedin = inferText(member.linkedin) || inferText(member.linkedIn);
+
+  if (kind === 'web' && website) return website;
+  if (kind === 'mail' && email) return `mailto:${email}`;
+  if (kind === 'linkedin' && linkedin) return linkedin;
+
+  return null;
+}
+
+function renderPortraitCardHtml(member: any): string {
+  const name = escapeHtml(inferName(member));
+  const role = escapeHtml(inferRole(member));
+  const src = escapeHtml(inferImageSrc(member));
+
+  const web = maybeLink(member, 'web');
+  const mail = maybeLink(member, 'mail');
+  const li = maybeLink(member, 'linkedin');
+
+  const iconButton = (href: string, svg: string) => `
+<a href="${escapeHtml(href)}" class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted-foreground hover:bg-muted/40 hover:text-forest-900 dark:hover:text-picket-50">
+  ${svg}
+</a>`.trim();
+
+  const icons = [web ? iconButton(web, iconSvg('web')) : '', mail ? iconButton(mail, iconSvg('mail')) : '', li ? iconButton(li, iconSvg('linkedin')) : '']
+    .filter(Boolean)
+    .join('\n');
+
+  return `
+<div class="rounded-2xl border border-border bg-background overflow-hidden">
+  <div class="aspect-[4/5] w-full bg-muted/20">
+    <img src="${src}" alt="${name}" class="h-full w-full object-cover" />
+  </div>
+  <div class="p-5 text-center">
+    <div class="text-base font-semibold text-forest-900 dark:text-picket-50">${name}</div>
+    ${role ? `<div class="mt-1 text-sm text-muted-foreground">${role}</div>` : ''}
+    ${icons ? `<div class="mt-4 flex items-center justify-center gap-3">${icons}</div>` : ''}
+  </div>
+</div>
+`.trim();
+}
+
+async function renderTeamSectionHtml(): Promise<string> {
+  const members = await getAllTeamMembers();
+
+  const ceo = members.find(isCEO) ?? members[0];
+  const advisors = members.filter((m) => isAdvisor(m) && m !== ceo);
+  const engineers = members.filter((m) => isEngineer(m) && m !== ceo && !isAdvisor(m));
+
+  const ceoName = escapeHtml(inferName(ceo));
+  const ceoRole = escapeHtml(inferRole(ceo));
+  const ceoSrc = escapeHtml(inferImageSrc(ceo));
+  const ceoQuote = escapeHtml(takeQuoteFromMember(ceo) || 'Quote here.');
+
+  const engineerCards = engineers.map(renderPortraitCardHtml).join('\n');
+  const advisorCards = advisors.map(renderPortraitCardHtml).join('\n');
+
+  const row = (title: string, cardsHtml: string) => {
+    if (!cardsHtml) return '';
+    return `
+<div class="not-prose mt-10">
+  <div class="text-sm font-semibold text-forest-900 dark:text-picket-50">${escapeHtml(title)}</div>
+  <div class="relative mt-4">
+    <div class="absolute left-0 right-0 top-[-10px] h-px bg-border"></div>
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      ${cardsHtml}
+    </div>
+  </div>
+</div>
+`.trim();
+  };
+
+  return `
+<div class="not-prose my-10">
+  <div class="rounded-2xl border border-border bg-background p-6">
+    <!-- CEO Feature: image left, details right (matches sketch) -->
+    <div class="grid gap-6 md:grid-cols-[320px_1fr] md:items-start">
+      <div class="overflow-hidden rounded-2xl border border-border bg-muted/20">
+        <div class="aspect-[4/5] w-full">
+          <img src="${ceoSrc}" alt="${ceoName}" class="h-full w-full object-cover" />
+        </div>
+      </div>
+
+      <div class="min-w-0">
+        <div class="text-2xl font-semibold text-forest-900 dark:text-picket-50">${ceoName}</div>
+        ${ceoRole ? `<div class="mt-1 text-sm text-muted-foreground">${ceoRole}</div>` : ''}
+
+        <div class="mt-5 rounded-xl bg-blue-50/60 p-4 dark:bg-blue-950/30">
+          <div class="border-l-4 border-blue-500 pl-4 text-sm text-muted-foreground">
+            “${ceoQuote}”
+          </div>
+        </div>
+      </div>
+    </div>
+
+    ${row('Engineering Team', engineerCards)}
+    ${row('Advisors', advisorCards)}
+  </div>
+</div>
+`.trim();
+}
+
+function detectSectionNameFromHeadingLine(line: string): string | null {
+  const h2 = line.match(/^##\s+(.+)\s*$/);
+  if (!h2) return null;
+  return h2[1].trim();
+}
+
+function suggestedImageSrc(activeSection: string, lastMeaningful: string): string | null {
+  const s = `${activeSection} ${lastMeaningful}`.toLowerCase();
+
+  // Prefer real existing images (from your tree)
+  if (s.includes('marketplace')) return '/images/case-studies/keasy-marketplace.svg';
+  if (s.includes('community') || s.includes('keasy')) return '/images/case-studies/keasylogo.svg';
+  if (s.includes('phone') || s.includes('ws-phone') || s.includes('ws phone')) return '/images/case-studies/phoneshop.png';
+  if (s.includes('sgp')) return '/images/case-studies/sgp-application.svg';
+
+  // Awards: use an existing banner image until you replace
+  if (activeSection.includes('award') || activeSection.includes('credibility')) return '/images/banners/plantbanner.png';
+
+  return null;
+}
+
+export async function loadCompanyOverviewDoc(): Promise<{
+  docTitle: string;
+  companyName: string;
+  toc: TocItem[];
+  html: string;
+}> {
+  const rawOriginal = safeReadCompanyDoc();
+  const coverFields = extractCoverFields(rawOriginal);
+
+  // Remove cover section from body so we don't duplicate it (cover is rendered by the page)
+  const rawBodyOnly = removeCoverSection(rawOriginal);
+
+  const normalized = normalizePageBreaks(normalizeInlineImagePlaceholders(rawBodyOnly));
+  const { markdown: withAnchors, toc } = buildTocAndInjectAnchors(normalized);
+
+  const lines = withAnchors.split('\n');
+  const out: string[] = [];
+
+  let activeSection = '';
+  let lastMeaningful = '';
+  let cachedTeamBlockHtml: string | null = null;
+
+  for (const line of lines) {
+    const sectionName = detectSectionNameFromHeadingLine(line);
+    if (sectionName) {
+      activeSection = stripPagePrefixFromHeading(sectionName).toLowerCase();
+      out.push(line);
+
+      // Inject Team layout after the Team heading
+      if (activeSection.includes('team')) {
+        if (!cachedTeamBlockHtml) cachedTeamBlockHtml = await renderTeamSectionHtml();
+        out.push(cachedTeamBlockHtml);
+      }
+
+      continue;
+    }
+
+    const trimmed = line.trim();
+
+    // Remove the unwanted “optional diagram/image” lines (UI cleanup only)
+    if (STRIP_EXACT_LINES.has(trimmed)) {
+      continue;
+    }
+
+    if (trimmed === '{image}') {
+      const src = suggestedImageSrc(activeSection, lastMeaningful);
+
+      if (activeSection.includes('award') || activeSection.includes('awards') || activeSection.includes('credibility')) {
+        out.push(
+          renderAwardRowHtml({
+            title: lastMeaningful || 'Awards',
+            imageSrc: src || '/images/banners/plantbanner.png',
+          })
+        );
+        continue;
+      }
+
+      if (src) {
+        out.push(
+          renderImageBlockHtml({
+            variant: 'image',
+            src,
+            alt: 'Document image',
+            caption: 'Replace this image later by updating the document content file.',
+          })
+        );
+        continue;
+      }
+
+      out.push(
+        renderImageBlockHtml({
+          variant: 'placeholder',
+          label: 'Image placeholder',
+          note: 'Replace this {image} in the content file with your image URL/path later.',
+        })
+      );
+      continue;
+    }
+
+    if (trimmed.length > 0) lastMeaningful = trimmed;
+    out.push(line);
+  }
+
+  const finalMarkdown = out.join('\n');
+  const renderedHtml = await markdownToHtml(finalMarkdown);
+
+  return {
+    docTitle: coverFields.docTitle,
+    companyName: coverFields.companyName,
+    toc,
+    html: renderedHtml,
+  };
 }
