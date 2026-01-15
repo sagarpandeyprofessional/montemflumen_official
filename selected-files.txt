@@ -55,6 +55,7 @@ const SERVICES = [
     ],
     quote: 'One ecosystem for everything foreigners need to thrive in Korea.',
     image: '/images/case-studies/keasylogo.svg',
+    url: 'https://koreaeasy.org/',
   },
   {
     id: 2,
@@ -67,10 +68,11 @@ const SERVICES = [
     ],
     quote: 'Commerce that builds community trust.',
     image: '/images/case-studies/keasy-marketplace.svg',
+    url: 'https://koreaeasy.org/marketplace/',
   },
   {
     id: 3,
-    title: 'Digital Application  with Guides',
+    title: 'Digital Application with Guides',
     subtitle: 'Error prevention for high-stakes systems',
     features: [
       'Step-by-step checklists',
@@ -79,6 +81,7 @@ const SERVICES = [
     ],
     quote: 'Reduce repeated visits, delays, and uncertainty.',
     image: '/images/case-studies/sgp-application.svg',
+    url: 'https://koreaeasy.org/sgp-application/',
   },
 ];
 

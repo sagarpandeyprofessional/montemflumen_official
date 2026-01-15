@@ -57,6 +57,7 @@ const SERVICES = [
     ],
     quote: 'One ecosystem for everything foreigners need to thrive in Korea.',
     image: '/images/case-studies/keasylogo.svg',
+    url: 'https://koreaeasy.org/',
   },
   {
     id: 2,
@@ -69,10 +70,11 @@ const SERVICES = [
     ],
     quote: 'Commerce that builds community trust.',
     image: '/images/case-studies/keasy-marketplace.svg',
+    url: 'https://koreaeasy.org/marketplace/',
   },
   {
     id: 3,
-    title: 'Digital Application  with Guides',
+    title: 'Digital Application with Guides',
     subtitle: 'Error prevention for high-stakes systems',
     features: [
       'Step-by-step checklists',
@@ -81,6 +83,7 @@ const SERVICES = [
     ],
     quote: 'Reduce repeated visits, delays, and uncertainty.',
     image: '/images/case-studies/sgp-application.svg',
+    url: 'https://koreaeasy.org/sgp-application/',
   },
 ];
 
@@ -345,14 +348,17 @@ export default function CompanyOverviewPage() {
                     <SectionTitle>Our Services</SectionTitle>
                     <div className="space-y-8">
                       {SERVICES.map((service, idx) => (
-                        <div key={service.id} className="rounded border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/60 overflow-hidden">
+                        <div key={service.id} className="rounded border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/60 overflow-hidden group hover:border-blue-300 dark:hover:border-blue-700 transition-colors">
                           <div className="flex flex-col md:flex-row">
-                            <div className="md:w-1/3 bg-white dark:bg-gray-800 flex items-center justify-center p-6">
+                            <a href={service.url} target="_blank" rel="noopener noreferrer" className="md:w-1/3 bg-white dark:bg-gray-800 flex items-center justify-center p-6 transition-transform group-hover:scale-[1.02]">
                               <Image src={service.image} alt={service.title} width={200} height={200} className="w-auto h-24 md:h-32 object-contain" />
-                            </div>
+                            </a>
                             <div className="flex-1 p-6">
                               <div className="text-xs text-blue-600 dark:text-blue-400 font-semibold mb-1">SERVICE {idx + 1}</div>
-                              <h3 className="text-xl font-bold text-gray-900 dark:text-white">{service.title}</h3>
+                              <a href={service.url} target="_blank" rel="noopener noreferrer" className="text-xl font-bold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors inline-flex items-center gap-2">
+                                {service.title}
+                                <svg className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                              </a>
                               <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{service.subtitle}</p>
                               <ul className="mt-4 space-y-1.5">
                                 {service.features.map((feature, fIdx) => (
@@ -363,6 +369,10 @@ export default function CompanyOverviewPage() {
                                 ))}
                               </ul>
                               <p className="mt-4 text-sm italic text-gray-600 dark:text-gray-400">&quot;{service.quote}&quot;</p>
+                              <a href={service.url} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline">
+                                Visit Website
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                              </a>
                             </div>
                           </div>
                         </div>
