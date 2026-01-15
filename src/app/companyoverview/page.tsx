@@ -35,10 +35,10 @@ const ENGINEERING_TEAM = [
 ];
 
 const ADVISORS = [
-  { name: 'Daniel Fellegger', role: 'Advisor', image: '/images/team/daniel.png', slug: 'daniel' },
+  { name: 'Daniel Fellegger', role: 'Special Advisor', image: '/images/team/daniel.png', slug: 'daniel' },
   { name: 'Joon M. Kim', role: 'Special Advisor', image: '/images/team/joon.png', slug: 'joon' },
-  { name: 'Winner Apata', role: 'Advisor', image: '/images/team/winner.png', slug: 'winner' },
-  { name: 'Niranjan Dahal', role: 'Advisor', image: '/images/team/niranjan.png', slug: 'niranjan' },
+  { name: 'Winner Apata', role: 'Policy Advisor', image: '/images/team/winner.png', slug: 'winner' },
+  { name: 'Niranjan Dahal', role: 'Special Advisor', image: '/images/team/niranjan.png', slug: 'niranjan' },
 ];
 
 // =============================================================================
