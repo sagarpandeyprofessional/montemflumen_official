@@ -1,5 +1,5 @@
 ---
-title: "Keasy Community App: A Home Base for Foreigners Living in Korea"
+title: "Keasy Community App: A complete guide for Foreigners Living in Korea"
 slug: "keasy-community-app"
 client: "Keasy (KoreaEasy)"
 industry: "Community Platform / Local Services"

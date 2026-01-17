@@ -1,8 +1,8 @@
 ---
 name: "Sahil Gevariya"
-role: "Full Stack Developer"
+role: "Backend Engineer, CAD Developer "
 department: "Engineering"
-bio: "Full stack developer, Focus: web development and scalable solutions."
+bio: "Developer focused on backend engineering, game development, CAD automation, and animation—building optimized, user-friendly tools and scalable systems. Currently pursuing an MEng in Artificial Intelligence & Big Data."
 image: "/images/team/sahil.png"
 
 linkedin: "https://www.linkedin.com/in/sahilnandlalbhai-gevariya-98a3163a2"
@@ -12,47 +12,51 @@ order: 2
 featured: true
 ---
 
-Sahil Nandlalbhai Gevariya is a full stack developer intern working on web development and engineering projects for Koreaeasy.org. He brings practical experience from professional freelance work and ongoing advanced studies in AI and Big Data.
+Sahil Gevariya is a developer with experience across backend engineering, game development, CAD automation, and animation. He focuses on building optimized, user-friendly tools and reliable software systems, with strong interest in automation and AI-driven solutions.
 
-## Background
+## Profile Summary
 
-Sahil combines academic training in IT, mobile applications, and game design with hands-on development experience. He is passionate about building responsive, user-focused web applications and delivering reliable solutions under real-world project conditions.
+Highly skilled developer with expertise in backend engineering, game development, CAD automation, and animation. Currently pursuing a Master of Engineering at Woosong University (Artificial Intelligence & Big Data), with a strong interest in automation and AI-driven solutions.
 
-## Technical Expertise
+## Technical Skills
 
-- Full Stack Web Development
-- Python, JavaScript
-- Frontend & Backend integration
-- Responsive UI/UX
-- Web Frameworks
-- Version control (Git)
-- Agile development practices
+- **Game Development:** Unity 2D/3D, C#, performance optimization, game mechanics
+- **Backend Development:** Node.js, Django, Python, REST APIs, MongoDB, SQL, database design
+- **Frontend Development:** HTML5, JavaScript, CSS (Flexbox, Grid, Animation), responsive UI
+- **CAD Automation:** AutoCAD, Fusion 360, CAD scripting, workflow automation, template systems
+- **3D & Animation:** storyboarding, 2D/3D animation, rendering, lighting, digital art
+- **Other:** ERP systems, system integration, scripting, IT fundamentals
 
-## Professional Experience
+## Project Experience
 
-**Montemflumen**  
-*Web Developer*  
-November 2025 – Present  
-Daejeon, South Korea
+### CAD Development & Automation Tools
+Developed automated tools for AutoCAD and Fusion 360 to reduce repetitive work, accelerate drawing creation, streamline template generation, and optimize engineering workflows.
 
-- Contributing to the development of core web features.
-- Supporting full stack implementation and frontend responsiveness.
-- Collaborating with cross-functional teams to deliver product goals.
+### 3D Model Import & Animation Export System
+Created a custom pipeline enabling users to import models, apply placement logic, adjust cameras, and export high-quality animations for product demos and content creation teams.
 
-**Techflow Enterprises Pvt. Ltd.**  
-*Professional Freelancer*  
-March 2024 – August 2025
+### ERP & Industrial Automation
+Implemented Python + Django automations for inventory, workflow tracking, and reporting—reducing manual processes, improving compliance checks, and increasing operational efficiency.
 
-- Provided freelance development services on full stack projects.
-- Built solutions focusing on performance and usability.
-- Worked directly with clients to translate requirements into functional applications.
+## Strengths
+
+- Strong technical foundation in game, backend, and automation development
+- Skilled in building optimized tools that improve workflows and efficiency
+- Strong understanding of business processes and technical automation
+- Creative problem solver with passion for AI and intelligent systems
+- Independent worker and strong team collaborator
 
 ## Education
 
-**Woosong University**  
-Master of Engineering (MEng), AI and Big Data  
-August 2025 – August 2027
+**Woosong University (South Korea)**  
+Master of Engineering – Artificial Intelligence & Big Data  
+Expected Graduation 08/2027
 
-**Gujarat University**  
-Bachelor of Science, Specialization in IT and Mobile Applications, Game Design and Development  
-June 2020 – April 2024
+**Gujarat University (India)**  
+M.Sc. IT (Integrated) – Game Design & Development  
+
+**Gayatri School (India)** 
+Higher Secondary (Science)
+
+**Sarvodaya Vidhyamandir (India)**  
+Secondary School Certificate (SSC) 

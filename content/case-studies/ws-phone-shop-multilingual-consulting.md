@@ -1,5 +1,5 @@
 ---
-title: "WS Phone Shop: Multilingual Phone Consulting & Pricing Cards in 7 Languages"
+title: "WS Phone Shop: Multilingual Phone Consulting App"
 slug: "ws-phone-shop-multilingual-consulting"
 client: "WS Phone Shop"
 industry: "Retail / Telecom Consulting"

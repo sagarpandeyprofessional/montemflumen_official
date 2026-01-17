@@ -1,8 +1,8 @@
 ---
 name: "John Paul"
-role: "AI Engineer & Python Developer"
+role: "AI Engineer | Data Scientist"
 department: "Engineering"
-bio: "AI engineer, Python developer, researcher."
+bio: "AI engineer and data scientist focused on deep learning and software design. Experienced building LLM-powered apps, sentiment/context models, and production APIs across academic and startup environments."
 image: "/images/team/paul.png"
 
 email: "johnpar2004@gmail.com"
@@ -12,43 +12,62 @@ order: 3
 featured: false
 ---
 
-John Paul is an AI engineer and Python developer with a strong foundation in machine learning, data engineering, and intelligent application development. He combines technical discipline with competitive drive, applying structured problem-solving to real-world AI challenges.
+John Paul Paredes Diez de Medina is an AI engineer and data scientist with strong interests in deep learning and software design. He primarily works in Python and enjoys building practical AI systems, from LLM-powered applications to cross-cultural sentiment and context modeling.
 
 ## Background
 
-John Paul is currently pursuing a Bachelor’s degree in Artificial Intelligence at Woosong University in Daejeon, South Korea. His journey into technology is marked by rapid mastery of Python and applied AI within a short timeframe, alongside hands-on software engineering experience in academic and professional environments.
-
-Beyond engineering, his background in competitive sports has shaped a disciplined, goal-driven approach to learning and execution.
+John Paul is pursuing a B.Sc. in Artificial Intelligence at Woosong University in Daejeon, South Korea, with additional international experience through a Computer Science exchange program at Bilkent University (Ankara, Turkey). He is passionate about becoming a well-rounded software engineer by exploring new tools and frontiers beyond his core Python background.
 
 ## Technical Expertise
 
-- Python (advanced)
-- Machine Learning algorithms
-- Deep Reinforcement Learning
-- Data Engineering
-- Flask and Django
-- OpenAI APIs and GPT-based applications
-- Data Structures and Algorithms
+- **Frameworks:** Ruby on Rails, Nuxt.js, FastAPI, Flutter, Django
+- **Libraries/Tools:** Unsloth, QLoRA, PyTorch, Redis, TailwindCSS
+- **Domains:** Software Engineering, AI Engineering, Machine Learning, Deep Learning, LLMs
 
 ## Experience
 
-**Universidad de Los Andes Bolivia**  
-*Software Engineer*  
-January 2024 – March 2024  
-La Paz, Bolivia
+**Hunter Global (Remote)**  
+*AI Development Intern*  
+Sept 2025 – Dec 2025  
+- Researched borderless AI and cultural intelligence systems for cross-cultural applications.
+- Developed sentiment and context models to improve AI adaptability across regions.
 
-**Universidad de Los Andes Bolivia**  
+**Montem Flumen**  
+*AI Engineer*  
+May 2024 – Present  
+Daejeon, South Korea  
+- Built and developed multiple projects related to foreign students and machine learning.
+- Maintained the website and represented the project at the KOEF U300 Startup Challenge (3rd Place).
+
+**Universidad de Los Andes**  
 *Software Developer*  
-December 2022 – July 2023  
-La Paz, Bolivia
+Jan 2023 – Dec 2023  
+La Paz, Bolivia  
+- Developed a GPT-based student assistant chat app.
+- Built REST APIs and fallback logic; improved UI and response speed by 20%.
+
+## Projects
+
+- **MLP – Black–Scholes Model:** Neural network approximation for option pricing and visualization of risk-neutral relationships. *(Python, PyTorch)*
+- **K-means Clustering to Understand Market Behavior:** Market behavior analysis with clustering; included regression-based pricing exploration for forex pairs. *(scikit-learn, linear models)*
 
 ## Education
 
 **Woosong University**  
-Bachelor’s Degree in Artificial Intelligence  
-September 2023 – May 2027
+B.Sc. Artificial Intelligence  
+Sept 2023 – May 2027  
+Daejeon, South Korea
 
-## Honors & Awards
+**Bilkent University**  
+Exchange, Computer Science  
+Sept 2025 – Jan 2026  
+Ankara, Turkey
 
-- Certificate of Completion – Software and Entrepreneurship Club
-- Certificate of Participation – Software and Entrepreneurship Club
+## Certifications & Awards
+
+- Data Science Lab (WorldQuant University, 2025)
+- Deep Learning Fundamentals (WorldQuant University, 2025)
+- KOEF U300 Startup Challenge - 3rd Place
+- 1st Place Powerlifting
+- 6th National BMX
+- Dog Shelter Volunteer Leader

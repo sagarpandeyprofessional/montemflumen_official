@@ -35,7 +35,7 @@ Alongside his academic journey, he actively leads startup initiatives and univer
 ## Professional Experience
 
 **MontemFlumen Inc.**  
-*Co-Founder / CEO*  
+*Founder / CEO*  
 December 2023 – Present
 
 - Spearheaded the establishment of a construction-focused startup integrating robotics and emerging technologies.
