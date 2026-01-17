@@ -1,6 +1,9 @@
-// File path: src/app/insights/[slug]/page.tsx
-// Role: Individual blog post detail page with rich content rendering
-// Reference: PIT-4 (onClick -> Client Component), PIT-12 (static params), PIT-16 (notFound)
+/**
+ * File path: src/app/insights/[slug]/page.tsx
+ * Role/responsibility: Individual blog post detail page with rich content rendering and SEO
+ * SEO: Article JSON-LD schema, og:image, canonical URL, breadcrumbs
+ * Reference: PIT-4 (onClick -> Client Component), PIT-12 (static params), PIT-16 (notFound)
+ */
 
 import { Metadata } from 'next';
 import Link from 'next/link';
@@ -9,6 +12,7 @@ import { Section } from '@/components/ui/Section';
 import { Tag } from '@/components/ui/Tag';
 import { Button } from '@/components/ui/Button';
 import { CopyLinkButton } from '@/components/ui/CopyLinkButton';
+import { ArticleSchema, BreadcrumbSchema } from '@/components/seo';
 import { getAllBlogPosts, getAllBlogPostSlugs } from '@/lib/content';
 import { formatDate, calculateReadTime } from '@/lib/utils';
 import { SITE_CONFIG } from '@/lib/constants';
@@ -30,17 +34,41 @@ export async function generateMetadata({
     return { title: `Post Not Found | ${SITE_CONFIG.name}` };
   }
 
+  const pageUrl = `${SITE_CONFIG.url}/insights/${params.slug}/`;
+  const ogImage = post.coverImage
+    ? `${SITE_CONFIG.url}${post.coverImage}`
+    : `${SITE_CONFIG.url}/images/banners/mainbanner.svg`;
+
   return {
-    title: `${post.title} | ${SITE_CONFIG.name}`,
+    title: post.title,
     description: post.excerpt,
     authors: [{ name: post.author }],
+    alternates: {
+      canonical: pageUrl,
+    },
     openGraph: {
+      type: 'article',
       title: post.title,
       description: post.excerpt,
-      type: 'article',
+      url: pageUrl,
       publishedTime: post.publishedAt,
       authors: [post.author],
-      images: post.coverImage ? [post.coverImage] : [],
+      section: post.category || 'Insights',
+      tags: post.tags || [],
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.excerpt,
+      images: [ogImage],
     },
   };
 }
@@ -62,11 +90,31 @@ export default async function BlogPostPage({
     .slice(0, 3);
 
   const readTime = calculateReadTime(post.content);
-  const shareUrl = `${SITE_CONFIG.url}/insights/${post.slug}`;
+  const pageUrl = `${SITE_CONFIG.url}/insights/${post.slug}/`;
   const postTags = post.tags || [];
+
+  const breadcrumbs = [
+    { name: 'Home', url: SITE_CONFIG.url },
+    { name: 'Insights', url: `${SITE_CONFIG.url}/insights/` },
+    { name: post.title, url: pageUrl },
+  ];
+
+  const twitterShareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(pageUrl)}`;
+  const linkedinShareUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(pageUrl)}&title=${encodeURIComponent(post.title)}`;
 
   return (
     <main className="min-h-screen">
+      <ArticleSchema
+        title={post.title}
+        description={post.excerpt}
+        author={post.author}
+        publishedAt={post.publishedAt}
+        image={post.coverImage}
+        url={pageUrl}
+        section={post.category}
+      />
+      <BreadcrumbSchema items={breadcrumbs} />
+
       <Section className="pt-32 pb-16" background="muted">
         <div className="max-w-3xl mx-auto">
           <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
@@ -79,9 +127,9 @@ export default async function BlogPostPage({
 
           <div className="flex flex-wrap items-center gap-3 mb-6">
             {post.category && <Tag variant="default">{post.category}</Tag>}
-            <span className="text-muted-foreground">•</span>
+            <span className="text-muted-foreground">&middot;</span>
             <span className="text-muted-foreground">{formatDate(post.publishedAt)}</span>
-            <span className="text-muted-foreground">•</span>
+            <span className="text-muted-foreground">&middot;</span>
             <span className="text-muted-foreground">{readTime}</span>
           </div>
 
@@ -145,7 +193,7 @@ export default async function BlogPostPage({
             <h4 className="text-sm font-medium text-muted-foreground mb-4">Share this article</h4>
             <div className="flex gap-3">
               <a
-                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(shareUrl)}`}
+                href={twitterShareUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
@@ -156,7 +204,7 @@ export default async function BlogPostPage({
                 </svg>
               </a>
               <a
-                href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(post.title)}`}
+                href={linkedinShareUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
@@ -167,7 +215,7 @@ export default async function BlogPostPage({
                 </svg>
               </a>
               <CopyLinkButton
-                url={shareUrl}
+                url={pageUrl}
                 className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
               />
             </div>

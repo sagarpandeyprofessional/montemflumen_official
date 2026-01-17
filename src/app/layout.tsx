@@ -1,15 +1,17 @@
 /**
  * File path: src/app/layout.tsx
- * Role/responsibility: Root layout with fonts, metadata, header, and footer
- * Connections: Wraps all pages, imports Header and Footer
+ * Role/responsibility: Root layout with fonts, metadata, header, footer, and global SEO
+ * Connections: Wraps all pages, imports Header and Footer, adds Organization schema
  * Edge cases: Dark mode flash prevention (PIT-95)
  * Performance: next/font optimization
+ * SEO: Organization JSON-LD, favicon, canonical base
  * Reference documents: PIT-3 (Metadata in Client), PIT-95 (Dark Mode FOUC)
  */
 
 import type { Metadata } from 'next';
 import { Inter, IBM_Plex_Mono } from 'next/font/google';
 import { Header, Footer } from '@/components/layout';
+import { OrganizationSchema, WebSiteSchema } from '@/components/seo';
 import { SITE_CONFIG, SEO_DEFAULTS } from '@/lib/constants';
 import './globals.css';
 
@@ -44,6 +46,12 @@ export const metadata: Metadata = {
   keywords: [...SEO_DEFAULTS.defaultKeywords],
   authors: [{ name: SITE_CONFIG.name }],
   creator: SITE_CONFIG.name,
+  publisher: SITE_CONFIG.name,
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   openGraph: {
     type: 'website',
     locale: 'en_US',
@@ -51,11 +59,20 @@ export const metadata: Metadata = {
     siteName: SITE_CONFIG.name,
     title: SITE_CONFIG.name,
     description: SITE_CONFIG.description,
+    images: [
+      {
+        url: `${SITE_CONFIG.url}/images/banners/mainbanner.svg`,
+        width: 1200,
+        height: 630,
+        alt: SITE_CONFIG.name,
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: SITE_CONFIG.name,
     description: SITE_CONFIG.description,
+    images: [`${SITE_CONFIG.url}/images/banners/mainbanner.svg`],
   },
   robots: {
     index: true,
@@ -67,6 +84,20 @@ export const metadata: Metadata = {
       'max-image-preview': 'large',
       'max-snippet': -1,
     },
+  },
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
+  manifest: '/site.webmanifest',
+  alternates: {
+    canonical: SITE_CONFIG.url,
   },
 };
 
@@ -95,6 +126,10 @@ export default function RootLayout({
             `,
           }}
         />
+        {/* Organization Schema - Global */}
+        <OrganizationSchema />
+        {/* WebSite Schema - Global */}
+        <WebSiteSchema />
       </head>
       <body className="flex min-h-screen flex-col font-sans antialiased">
         <Header />

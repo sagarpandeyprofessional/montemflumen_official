@@ -1,9 +1,12 @@
-// File path: src/app/work/[slug]/page.tsx
-// Role: Individual case study detail page
-// Connected files: content.ts (data), Section components (UI)
-// UI patterns: PORT-02 Case Study Narrative, BLOG-02 Multimedia Story
-// Edge cases: notFound handling, generateStaticParams for SSG
-// Reference: PIT-12 (static params), PIT-16 (notFound)
+/**
+ * File path: src/app/work/[slug]/page.tsx
+ * Role/responsibility: Individual case study detail page with SEO
+ * SEO: Article JSON-LD schema, og:image, canonical URL, breadcrumbs
+ * Connected files: content.ts (data), Section components (UI)
+ * UI patterns: PORT-02 Case Study Narrative, BLOG-02 Multimedia Story
+ * Edge cases: notFound handling, generateStaticParams for SSG
+ * Reference: PIT-12 (static params), PIT-16 (notFound)
+ */
 
 import { Metadata } from 'next';
 import Link from 'next/link';
@@ -11,6 +14,7 @@ import { notFound } from 'next/navigation';
 import { Section } from '@/components/ui/Section';
 import { Tag } from '@/components/ui/Tag';
 import { Button } from '@/components/ui/Button';
+import { ArticleSchema, BreadcrumbSchema } from '@/components/seo';
 import { getAllCaseStudies, getAllCaseStudySlugs } from '@/lib/content';
 import { SITE_CONFIG } from '@/lib/constants';
 
@@ -35,14 +39,36 @@ export async function generateMetadata({
     };
   }
 
+  const pageUrl = `${SITE_CONFIG.url}/work/${params.slug}/`;
+  const ogImage = caseStudy.coverImage
+    ? `${SITE_CONFIG.url}${caseStudy.coverImage}`
+    : `${SITE_CONFIG.url}/images/banners/mainbanner.svg`;
+
   return {
-    title: `${caseStudy.title} | ${SITE_CONFIG.name}`,
-    description: caseStudy.excerpt,
+    title: caseStudy.title,
+    description: caseStudy.excerpt || caseStudy.description,
+    alternates: {
+      canonical: pageUrl,
+    },
     openGraph: {
-      title: caseStudy.title,
-      description: caseStudy.excerpt,
       type: 'article',
-      images: caseStudy.coverImage ? [caseStudy.coverImage] : [],
+      title: caseStudy.title,
+      description: caseStudy.excerpt || caseStudy.description,
+      url: pageUrl,
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: caseStudy.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: caseStudy.title,
+      description: caseStudy.excerpt || caseStudy.description,
+      images: [ogImage],
     },
   };
 }
@@ -65,8 +91,29 @@ export default async function CaseStudyPage({
     .filter((cs) => cs.slug !== caseStudy.slug)
     .slice(0, 2);
 
+  const pageUrl = `${SITE_CONFIG.url}/work/${caseStudy.slug}/`;
+
+  // Breadcrumb items
+  const breadcrumbs = [
+    { name: 'Home', url: SITE_CONFIG.url },
+    { name: 'Work', url: `${SITE_CONFIG.url}/work/` },
+    { name: caseStudy.title, url: pageUrl },
+  ];
+
   return (
     <main className="min-h-screen">
+      {/* JSON-LD Structured Data */}
+      <ArticleSchema
+        title={caseStudy.title}
+        description={caseStudy.excerpt || caseStudy.description}
+        author={SITE_CONFIG.name}
+        publishedAt={caseStudy.publishedAt}
+        image={caseStudy.coverImage}
+        url={pageUrl}
+        section={caseStudy.industry || 'Case Study'}
+      />
+      <BreadcrumbSchema items={breadcrumbs} />
+
       {/* Hero Section */}
       <Section className="pt-32 pb-16" background="muted">
         <div className="max-w-4xl mx-auto">
@@ -95,7 +142,7 @@ export default async function CaseStudyPage({
 
           {/* Excerpt */}
           <p className="text-xl text-muted-foreground mb-8">
-            {caseStudy.excerpt}
+            {caseStudy.excerpt || caseStudy.description}
           </p>
 
           {/* Meta Info */}
@@ -106,7 +153,7 @@ export default async function CaseStudyPage({
             </div>
             <div>
               <p className="text-sm text-muted-foreground mb-1">Industry</p>
-              <p className="font-medium">{caseStudy.industry}</p>
+              <p className="font-medium">{caseStudy.industry || 'Technology'}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground mb-1">Duration</p>
@@ -201,7 +248,7 @@ export default async function CaseStudyPage({
       </Section>
 
       {/* Testimonial */}
-      {caseStudy.testimonial && (
+      {caseStudy.testimonial && caseStudy.testimonial.quote && (
         <Section className="py-16" background="muted">
           <div className="max-w-3xl mx-auto text-center">
             <svg className="w-12 h-12 text-primary/20 mx-auto mb-6" fill="currentColor" viewBox="0 0 24 24">

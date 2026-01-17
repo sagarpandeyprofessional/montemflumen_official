@@ -233,9 +233,12 @@ export async function getAllBlogPosts(): Promise<BlogPost[]> {
 
     if (parsed) {
       const htmlContent = await markdownToHtml(parsed.content);
+      // Handle both 'date' and 'publishedAt' fields for compatibility
+      const publishedAt = parsed.frontmatter.publishedAt || (parsed.frontmatter as any).date || new Date().toISOString();
       posts.push({
         slug: parsed.slug,
         ...parsed.frontmatter,
+        publishedAt,
         content: htmlContent,
       });
     }

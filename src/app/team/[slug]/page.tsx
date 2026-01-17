@@ -1,7 +1,8 @@
 /**
  * File path: src/app/team/[slug]/page.tsx
- * Role/responsibility: Individual team member profile page
+ * Role/responsibility: Individual team member profile page with SEO
  * Connections: Dynamic route, loads from markdown via content.ts
+ * SEO: Person JSON-LD schema, og:image, canonical URL
  * Reference documents: PIT-12 (Static Params), PIT-16 (Not Found Handling), PIT-76 (undefined.map)
  *
  * UI note: This page uses a SINGLE hero section with a full-bleed background image
@@ -13,7 +14,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Section, Button, Tag } from '@/components/ui';
+import { PersonSchema, BreadcrumbSchema } from '@/components/seo';
 import { getTeamMemberBySlug, getAllTeamMemberSlugs } from '@/lib/content';
+import { SITE_CONFIG } from '@/lib/constants';
 
 // Generate static params for all team members (PIT-12)
 export async function generateStaticParams() {
@@ -35,9 +38,37 @@ export async function generateMetadata({
     };
   }
 
+  const pageUrl = `${SITE_CONFIG.url}/team/${params.slug}/`;
+  const ogImage = member.image 
+    ? `${SITE_CONFIG.url}${member.image}`
+    : `${SITE_CONFIG.url}/images/banners/mainbanner.svg`;
+
   return {
     title: member.name,
     description: member.bio,
+    alternates: {
+      canonical: pageUrl,
+    },
+    openGraph: {
+      type: 'profile',
+      title: `${member.name} - ${member.role}`,
+      description: member.bio,
+      url: pageUrl,
+      images: [
+        {
+          url: ogImage,
+          width: 800,
+          height: 800,
+          alt: member.name,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${member.name} - ${member.role}`,
+      description: member.bio,
+      images: [ogImage],
+    },
   };
 }
 
@@ -60,8 +91,36 @@ export default async function TeamMemberPage({
   // File location: public/images/banners/plantbanner.png
   const heroBannerSrc = '/images/banners/plantbanner.png';
 
+  // URLs for SEO
+  const pageUrl = `${SITE_CONFIG.url}/team/${params.slug}/`;
+
+  // Collect social links for sameAs
+  const sameAs = [
+    member.linkedin,
+    member.github,
+  ].filter(Boolean) as string[];
+
+  // Breadcrumb items
+  const breadcrumbs = [
+    { name: 'Home', url: SITE_CONFIG.url },
+    { name: 'Team', url: `${SITE_CONFIG.url}/team/` },
+    { name: member.name, url: pageUrl },
+  ];
+
   return (
     <>
+      {/* JSON-LD Structured Data */}
+      <PersonSchema
+        name={member.name}
+        jobTitle={member.role}
+        description={member.bio}
+        image={member.image}
+        email={member.email}
+        url={pageUrl}
+        sameAs={sameAs}
+      />
+      <BreadcrumbSchema items={breadcrumbs} />
+
       {/* HERO (single section to prevent duplicate background slices) */}
       <Section className="relative overflow-hidden py-10 md:py-12 lg:py-14">
         {/* Full-bleed background */}

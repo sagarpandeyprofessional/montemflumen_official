@@ -1,13 +1,14 @@
 # robots.txt for Montemflumen Inc.
-# https://montemflumen.com
+# https://montemflumen.org
 
 User-agent: *
 Allow: /
 
-# Sitemap
-Sitemap: https://montemflumen.com/sitemap.xml
+# Sitemap - MUST match SITE_CONFIG.url
+Sitemap: https://montemflumen.org/sitemap.xml
 
 # Disallow admin or private paths (none currently)
 # Disallow: /admin/
 
-
+# Crawl-delay for politeness (optional)
+# Crawl-delay: 1
